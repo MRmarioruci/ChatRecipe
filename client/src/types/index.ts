@@ -1,0 +1,34 @@
+export type ContextType = { state: StateType; dispatch: React.Dispatch<StateAction> } | null;
+export interface InventoryItem{
+    id: number;
+    title: string;
+    description: string;
+    image?: string;
+    price?: number;
+    stock?: number;
+    color?: string;
+}
+export interface StateType{
+    user: any;
+    inventory: InventoryItem[];
+    bookmarks: Recipe[];
+    main: any;
+}
+export interface StateAction{
+    type: string;
+    payload: any;
+}
+
+export interface Recipe{
+    id?:number;
+    name: string;
+    description: string;
+    execution: string;
+    ingredients: string | TrustedHTML;
+    bookmarked?: boolean;
+}
+export interface MainState{
+    selectedRecipe: Recipe | null;
+    recipes: Recipe[];
+    user: string;
+}
