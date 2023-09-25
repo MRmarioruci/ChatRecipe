@@ -1,7 +1,7 @@
 from db import db
 import openai
 import os
-openai.api_key = "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"
+openai.api_key = ""
 
 class CreateModel:
 	def prompt_gpt(self, messages, temperature):
