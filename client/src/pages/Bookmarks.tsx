@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react'
+import {useEffect, useState, useCallback} from 'react'
 import { useGlobalState } from '../context/GlobalState';
 import Lottie from 'react-lottie-player'
 import bookmark from '../assets/animations/bookmarks.json';
@@ -11,10 +11,10 @@ function Bookmarks() {
     const {state, dispatch} = useGlobalState();
     const [instructionsModal, setInstructionsModal] = useState<boolean | RecipeType>(false);
     const {bookmarks} = state;
-    const getBookmarks = async () => {
+    const getBookmarks = useCallback(async () => {
         try {
             const data = await get();
-            if(data){
+            if(data.status === 'ok'){
                 dispatch({
                     type: 'BOOKMARKS_SET',
                     payload: data
@@ -25,7 +25,7 @@ function Bookmarks() {
         } catch (error) {
             console.error(error);
         }
-    }
+    }, [dispatch])
     const removeMe = async (bookmark_id: number | undefined) => {
         if(!bookmark_id) return false;
         
@@ -40,7 +40,7 @@ function Bookmarks() {
     }
     useEffect(() => {
         getBookmarks();
-    }, [])
+    }, [getBookmarks])
     return (
         <div className="page">
             {bookmarks.length  === 0 &&

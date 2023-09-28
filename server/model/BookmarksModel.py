@@ -41,13 +41,9 @@ class BookmarksModel:
         if not user_id or not bookmark_id:
             return False
 
-        bookmark = self.get(user_id=user_id, bookmark_id=bookmark_id)
-        if len(bookmark) == 0:
-            return False
-
-        bookmark_instance = bookmark[0]
+        bookmark = db.session.query(Bookmarks).get(bookmark_id)
         try:
-            db.session.delete(bookmark_instance)
+            db.session.delete(bookmark)
             db.session.commit()
             return True
         except Exception as e:
@@ -67,6 +63,7 @@ class BookmarksModel:
             Bookmarks.user_id == user_id
             #Bookmark.name.like('%' + name + '%')
         ).all()
+        
         bookmarks = [{
             'id': bookmark.id,
             'name': bookmark.name,

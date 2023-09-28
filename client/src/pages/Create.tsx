@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import Lottie from 'react-lottie-player'
 import creatingAnimation from '../assets/animations/creating.json';
 import errorAnimation from '../assets/animations/error.json';
@@ -20,7 +20,7 @@ function Create() {
 	const [instructionsModal, setInstructionsModal] = useState<boolean | RecipeType>(false);
 	const [selectedIngredients, setSelectedIngredients] = useState<string[]>([]);
 	const {main, inventory} = state;
-	const abortController = new AbortController();
+	const abortController = useMemo(() => new AbortController(), []);
 
 	const get = useCallback(async () => {
 		setLoading(true);
@@ -29,6 +29,11 @@ function Create() {
 		try {
 			const data = await create(currentRecipes, selectedIngredients, abortController.signal);
 			if(data.status === 'ok'){
+				if(data.data === 'An error occured on chatcompletion'){
+					setError('An error occured. Please try again later.')
+					setLoading(false);
+					return;
+				}
 				const recipes = JSON.parse(JSON.stringify(data.data));
 				dispatch({
                     type: 'RECIPES_SET',
@@ -45,7 +50,7 @@ function Create() {
 		return () => {
 			abortController.abort();
 		}
-	}, [selectedIngredients])
+	}, [selectedIngredients, abortController, main.recipes, dispatch])
 	const getMessage = () => {
 		const randomMessage = Math.floor(Math.random() * 9) + 0;
 		const messages = [
@@ -75,10 +80,12 @@ function Create() {
 		}
 		
 	}
-
+	const canViewList = ():boolean => {
+		return !loading && main.recipes.length > 0 && !error
+	}
 	useEffect(() => {
 		if(main?.recipes.length === 0) get();
-	}, [])
+	}, [main.recipes, get])
 	return (
 		<div className="page create">
 			<div className="create__actions">
@@ -136,7 +143,7 @@ function Create() {
 					</div>
 				</div>
 			}
-			{ (!loading && main.recipes.length > 0 && !error) && 
+			{ canViewList() && 
 				<>
 					{main.recipes.map((recipe: RecipeType, idx:number) => {
 						return (

@@ -20,11 +20,12 @@ function InventoryItem({item, dispatch}: PropTypes) {
                 payload: data.data,
             })
 		}
-	},[])
+	},[item.id, dispatch])
+	
 	return (
 		<div className="inventory__item" style={{background: item?.color}}>
 			<div className="inventory__item-icon">
-				<img src="https://api.iconify.design/noto:pot-of-food.svg" width="60"/>
+				<img src="https://api.iconify.design/noto:pot-of-food.svg" width="60" alt="intentory item"/>
 			</div>
 			<div className="inventory__item-content">
 				<div className="inventory__item-contentTop">

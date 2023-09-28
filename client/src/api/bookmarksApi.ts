@@ -1,4 +1,3 @@
-import { InventoryItem } from "../types";
 import { Recipe } from "../types";
 
 const get = () => fetch('/api/bookmarks/get')

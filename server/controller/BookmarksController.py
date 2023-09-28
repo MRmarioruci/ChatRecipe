@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from model import BookmarksModel
 
 def get_response():
-    return {"status": "error", "data": "ok"}
+    return {"status": "error", "data": None}
 
 class BookmarksController:
     def __init__(self):

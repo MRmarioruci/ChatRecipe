@@ -16,7 +16,7 @@ function InventoryAdd({dispatch, cancel}: PropTypes) {
 			dispatch({ type: 'INVENTORY_ADD', payload: data.data})
 			cancel(false);
 		}
-	}, [title, description])
+	}, [title, description, cancel, dispatch])
 	return (
 		<div className="modal__overlay active modal__cheatsheet">
 			<div className="modal active animate__animated animate__zoomIn modal__md">

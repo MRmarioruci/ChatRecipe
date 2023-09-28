@@ -1,6 +1,8 @@
 import React, {useCallback, useEffect} from 'react'
 import { StateAction, InventoryItem } from '../../types';
+import Lottie from 'react-lottie-player';
 import { getInventory } from '../../api/inventoryApi';
+import inventoryAnimation from '../../assets/animations/inventory.json';
 
 type PropTypes = {
     inventory: InventoryItem[];
@@ -24,7 +26,7 @@ function IngredientsModal({inventory, dispatch, cancel, selectedIngredients, set
 		} catch (error) {
 			console.log(error);
 		}
-	}, [inventory])
+	}, [dispatch])
 
 	const toggleIngredient = (newValue:boolean, ingredientTitle:string) => {
 		if(newValue){
@@ -43,7 +45,7 @@ function IngredientsModal({inventory, dispatch, cancel, selectedIngredients, set
 
 	useEffect(() => {
 		if(inventory.length === 0) get();
-	}, [inventory])
+	}, [inventory, get])
 
 	return (
 		<div className="modal__overlay active modal__cheatsheet">
@@ -68,6 +70,17 @@ function IngredientsModal({inventory, dispatch, cancel, selectedIngredients, set
 								</div>
 							)
 						})}
+						{inventory.length === 0 && 
+							<div className="text__center">
+								<Lottie
+									loop
+									animationData={inventoryAnimation}
+									play
+									style={{ width: 150, height: 150, margin: 'auto' }}
+								/>
+								<h3>Nothing in your inventory</h3>
+							</div>
+						}
 					</div>
 					<div className="modal__footer text__right">
 						<button className="btn btn__primary" onClick={() => { cancel(false) }}>

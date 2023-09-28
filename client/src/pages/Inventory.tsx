@@ -23,11 +23,12 @@ function Inventory() {
 		} catch (error) {
 			console.log(error);
 		}
-	}, [])
+	}, [dispatch])
 
 	useEffect(() => {
 		get();
-	}, [])
+	}, [get])
+	
 	return (
 		<div className="page inventory">
 			<div className="page__header">

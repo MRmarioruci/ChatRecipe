@@ -17,7 +17,7 @@ function InventoryEdit({item, dispatch, cancel}: PropTypes) {
 		if(data){
 			dispatch({type: 'INVENTORY_EDIT', payload: data.data})
 		}
-	}, [])
+	}, [dispatch, item])
 	return (
 		<div className="modal__overlay active">
 			<div className="modal active animate__animated animate__zoomIn modal__md">
@@ -49,7 +49,7 @@ function InventoryEdit({item, dispatch, cancel}: PropTypes) {
 						</div>
 					</div>
 					<div className="modal__footer text__right">
-						<button className="btn btn__primary">
+						<button className="btn btn__primary" onClick={() => cancel(false)}>
 							Done
 						</button>
 					</div>
