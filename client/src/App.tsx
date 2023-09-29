@@ -1,7 +1,8 @@
-import React, {lazy, Suspense} from 'react';
+import {lazy, Suspense, useEffect} from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import './assets/scss/main.scss';
 import { GlobalStateProvider } from './context/GlobalState';
+import { useGlobalState } from './context/GlobalState';
 
 const Main = lazy(() => import ('./pages/Main'));
 const Inventory = lazy(() => import ('./pages/Inventory'));
@@ -11,6 +12,13 @@ const Menu = lazy(() => import ('./components/Menu'));
 const Header = lazy(() => import ('./components/Header'));
 
 function App() {
+	const {state, dispatch} = useGlobalState();
+	const {user} = state;
+	
+	useEffect(() => {
+		/* Check if is logged */
+
+	}, [])
 	return (
 		<GlobalStateProvider>
 			<div className="main">

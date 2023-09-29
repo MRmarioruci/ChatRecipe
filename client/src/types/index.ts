@@ -12,7 +12,7 @@ export interface StateType{
     user: any;
     inventory: InventoryItem[];
     bookmarks: Recipe[];
-    main: any;
+    main: MainState;
 }
 export interface StateAction{
     type: string;
@@ -30,5 +30,4 @@ export interface Recipe{
 export interface MainState{
     selectedRecipe: Recipe | null;
     recipes: Recipe[];
-    user: string;
 }

@@ -11,7 +11,6 @@ const initialState = {
     bookmarks: [],
     main: {
         recipes: [],
-        user: '',
         selectedRecipe: null,
     }
 };

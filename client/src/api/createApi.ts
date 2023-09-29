@@ -1,9 +1,3 @@
-import { InventoryItem } from "../types";
-type Status = 'ok' | 'error'
-type CreateResponse = {
-    status: Status,
-    data: any
-}
 const create = (currentRecipes: string[], inventory: string[], signal: AbortSignal) => fetch('/api/create/', {
     method: 'POST',
     headers: {

@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useMemo } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import Lottie from 'react-lottie-player'
 import creatingAnimation from '../assets/animations/creating.json';
 import errorAnimation from '../assets/animations/error.json';
@@ -11,6 +11,10 @@ import Recipe from './Recipe';
 import IngredientsModal from './Create/IngredientsModal';
 import InstructionsModal from './Create/InstructionsModal';
 
+type ApiResponse = {
+	status: 'ok' | 'error',
+	data: string
+}
 function Create() {
 	console.log('component rerendered...')
 	const {state, dispatch} = useGlobalState();
@@ -20,14 +24,14 @@ function Create() {
 	const [instructionsModal, setInstructionsModal] = useState<boolean | RecipeType>(false);
 	const [selectedIngredients, setSelectedIngredients] = useState<string[]>([]);
 	const {main, inventory} = state;
-	const abortController = useMemo(() => new AbortController(), []);
+	const abortController = useRef(new AbortController());
 
 	const get = useCallback(async () => {
 		setLoading(true);
 		setError(null)
 		const currentRecipes: string[] = main.recipes.map((recipe: RecipeType) => recipe.name)
 		try {
-			const data = await create(currentRecipes, selectedIngredients, abortController.signal);
+			const data: ApiResponse = await create(currentRecipes, selectedIngredients, abortController.current.signal);
 			if(data.status === 'ok'){
 				if(data.data === 'An error occured on chatcompletion'){
 					setError('An error occured. Please try again later.')
@@ -42,14 +46,12 @@ function Create() {
 			}else{
 				console.log(data);
 			}
-		} catch (error) {
-			setError('An error occured. Please try again.');
-			console.log(error);
+		} catch (e) {
+			if ((e as Error).name !== 'AbortError') {
+				setError('An error occured. Please try again.');
+			}
 		}
 		setLoading(false);
-		return () => {
-			abortController.abort();
-		}
 	}, [selectedIngredients, abortController, main.recipes, dispatch])
 	const getMessage = () => {
 		const randomMessage = Math.floor(Math.random() * 9) + 0;
@@ -84,8 +86,14 @@ function Create() {
 		return !loading && main.recipes.length > 0 && !error
 	}
 	useEffect(() => {
-		if(main?.recipes.length === 0) get();
-	}, [main.recipes, get])
+		if((main?.recipes.length === 0)){
+			if(abortController.current){
+				abortController.current.abort();
+				abortController.current = new AbortController();
+			}
+			get();
+		}
+	}, [])
 	return (
 		<div className="page create">
 			<div className="create__actions">
@@ -145,7 +153,7 @@ function Create() {
 			}
 			{ canViewList() && 
 				<>
-					{main.recipes.map((recipe: RecipeType, idx:number) => {
+					{main?.recipes?.map((recipe: RecipeType, idx:number) => {
 						return (
 							<div className="card card__bordered">
 								<Recipe recipe={recipe} idx={idx} showIngredients={true} />
