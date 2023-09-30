@@ -114,6 +114,7 @@ a {
 			flex-direction: row;
 			justify-content: center;
 			align-items: center;
+			filter: grayscale(100%) brightness(57%) sepia(20%) hue-rotate(-140deg) saturate(900%) contrast(8);
 		}
 		.main__header-account{
 			width: 50px;
@@ -188,7 +189,7 @@ a {
 			}
 		}
 		.main__menu-itemActive{
-			background-color: var(--textColor);
+			background-color: var(--primary);
 			color: var(--secondaryTextColor)
 		}
 	}
@@ -297,4 +298,38 @@ a {
 		-webkit-backdrop-filter: blur(14px);
 		backdrop-filter: blur(14px);
 	}
+}
+.generate{
+	position: absolute;
+	bottom: 75px;
+	right: 10px;
+	background-color: RGBA(var(--primary-rgb) / 50%);
+	border: 1px solid var(--primary);
+	width: 70px;
+	height: 70px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50%;
+	overflow: hidden;
+}
+.ingredientsActions{
+	position: absolute;
+	bottom: 155px;
+	right: 20px;
+	background-color: RGBA(var(--primary-rgb) / 50%);
+	border: 1px solid var(--primary);
+	width: 50px;
+	height: 50px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50%;
+	overflow: hidden;
+}
+.lottie svg{
+	//filter: brightness(70%) saturate(50%) invert(71%) sepia(28%) saturate(6892%) hue-rotate(225deg) brightness(107%) contrast(99%);
+	filter: grayscale(100%) brightness(57%) sepia(20%) hue-rotate(-140deg) saturate(900%) contrast(8);
 }

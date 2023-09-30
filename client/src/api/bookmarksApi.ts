@@ -1,10 +1,10 @@
 import { Recipe } from "../types";
 
-const get = () => fetch('/api/bookmarks/get')
+const _get = () => fetch('/api/bookmarks/get')
 .then((data) => data.json())
 .catch((err) => { throw new Error(err) });
 
-const bookmark = (recipe:Recipe) => fetch('/api/bookmarks/add', {
+const _bookmark = (recipe:Recipe) => fetch('/api/bookmarks/add', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
@@ -14,7 +14,7 @@ const bookmark = (recipe:Recipe) => fetch('/api/bookmarks/add', {
 .then((data) => data.json())
 .catch((err) => { throw new Error(err) });
 
-const remove = (bookmark_id: number) => fetch('/api/bookmarks/remove', {
+const _remove = (bookmark_id: number) => fetch('/api/bookmarks/remove', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
@@ -27,7 +27,7 @@ const remove = (bookmark_id: number) => fetch('/api/bookmarks/remove', {
 .catch((err) => { throw new Error(err) });
 
 export {
-    get,
-    bookmark,
-    remove
+    _get,
+    _bookmark,
+    _remove
 }

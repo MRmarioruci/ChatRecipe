@@ -1,32 +1,28 @@
 import { useEffect, useState, useCallback } from 'react'
+import { Link } from'react-router-dom';
+import { _getInventory } from '../api/inventoryApi';
+import useCombinedStore from '../State';
 import Lottie from 'react-lottie-player'
 import inventoryAnimation from '../assets/animations/inventory.json';
-import { useGlobalState } from '../context/GlobalState';
-import { Link } from'react-router-dom';
-import { getInventory } from '../api/inventoryApi';
 import InventoryAdd from './InventoryComponents/InventoryAdd';
 import InventoryItem from './InventoryComponents/InventoryItem';
 
 function Inventory() {
-	const {state, dispatch} = useGlobalState();
+	const {inventory, loadInventory} = useCombinedStore();
 	const [addInventoryModal, setAddInventoryModal] = useState<boolean>(false);
-	const {inventory} = state;
 	const get = useCallback(async () => {
 		try {
-			const data = await getInventory();
+			const data = await _getInventory();
 			if(data.status === 'ok'){
-				dispatch({
-                    type: 'INVENTORY_SET',
-                    payload: data.data
-                })
+				loadInventory(data.data);
 			}
 		} catch (error) {
 			console.log(error);
 		}
-	}, [dispatch])
+	}, [loadInventory])
 
 	useEffect(() => {
-		get();
+		if(inventory.length === 0) get();
 	}, [get, inventory])
 	
 	return (
@@ -51,14 +47,14 @@ function Inventory() {
 				<div className="inventory__list">
 					{inventory.map((item, index) => {
 						return (
-                            <InventoryItem key={`inventory__${index}`} item={item} dispatch={dispatch} />
+                            <InventoryItem key={`inventory__${index}`} item={item} />
                         )
 					})}
 				</div>
 			}
 			{ inventory.length === 0 &&
 				<div className="text__center">
-					<div>
+					<div className="lottie">
 						<Lottie
 							loop
 							animationData={inventoryAnimation}
@@ -76,7 +72,7 @@ function Inventory() {
 					</div>
 				</div>
 			}
-			{ addInventoryModal && <InventoryAdd dispatch={dispatch} cancel={setAddInventoryModal} />}
+			{ addInventoryModal && <InventoryAdd cancel={setAddInventoryModal} />}
 		</div>
 	)
 }

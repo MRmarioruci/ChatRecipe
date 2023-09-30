@@ -1,41 +1,39 @@
 import {useEffect, useState, useCallback} from 'react'
-import { useGlobalState } from '../context/GlobalState';
 import Lottie from 'react-lottie-player'
 import bookmark from '../assets/animations/bookmarks.json';
-import {get, remove} from '../api/bookmarksApi';
+import {_get, _remove} from '../api/bookmarksApi';
 import {Recipe as RecipeType} from '../types/index';
 import Recipe from './Recipe';
 import InstructionsModal from './Create/InstructionsModal';
 
 function Bookmarks() {
-    const {state, dispatch} = useGlobalState();
     const [instructionsModal, setInstructionsModal] = useState<boolean | RecipeType>(false);
-    const {bookmarks} = state;
+    const bookmarks:any = [];
     const getBookmarks = useCallback(async () => {
         try {
-            const data = await get();
+            const data = await _get();
             if(data.status === 'ok'){
-                dispatch({
+                /* dispatch({
                     type: 'BOOKMARKS_SET',
                     payload: data
-                })
+                }) */
             }else{
                 throw new Error(`Status error ${data}`);
             }
         } catch (error) {
             console.error(error);
         }
-    }, [dispatch])
+    }, [])
     const removeMe = async (bookmark_id: number | undefined) => {
         if(!bookmark_id) return false;
         
-        const removed = await remove(bookmark_id);
+        const removed = await _remove(bookmark_id);
         if(removed.status === 'ok'){
             console.log(removed);
-            dispatch({
+            /* dispatch({
                 type: 'BOOKMARKS_DELETE',
                 payload: bookmark_id
-            })
+            }) */
         }
     }
     useEffect(() => {
@@ -45,7 +43,7 @@ function Bookmarks() {
         <div className="page">
             {bookmarks.length  === 0 &&
                 <div className="intro">
-                    <div>
+                    <div className="lottie">
                         <Lottie
                             loop
                             animationData={bookmark}

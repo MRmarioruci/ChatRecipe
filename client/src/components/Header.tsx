@@ -1,16 +1,15 @@
 import logo from '../assets/images/logo.png';
-import { useGlobalState } from '../context/GlobalState';
+import useCombinedStore from '../State';
 
 function Header({}) {
-    const {state, dispatch} = useGlobalState();
-	const {user} = state;
+	const {user} = useCombinedStore();
 
     return (
         <div className="main__header">
             <div className="main__header-logo">
                 <img  src={logo} width={220} alt="Logo"/>
             </div>
-            {user.hasOwnProperty('email') &&
+            {user &&
                 <div className="main__header-account">
                     MR
                 </div>

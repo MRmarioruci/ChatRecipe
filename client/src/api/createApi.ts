@@ -1,4 +1,4 @@
-const create = (currentRecipes: string[], inventory: string[], signal: AbortSignal) => fetch('/api/create/', {
+const _create = (currentRecipes: string[], inventory: string[], signal: AbortSignal) => fetch('/api/create/', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
@@ -13,5 +13,5 @@ const create = (currentRecipes: string[], inventory: string[], signal: AbortSign
 .catch((err) => { throw new Error(err) });
 
 export {
-    create,
+    _create,
 }

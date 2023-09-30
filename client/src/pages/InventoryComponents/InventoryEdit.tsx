@@ -1,23 +1,24 @@
 import React, {useState, useCallback} from 'react'
-import { InventoryItem as InventoryItemType, StateAction } from '../../types'
-import { editInventoryItem } from '../../api/inventoryApi'
+import { InventoryItem as InventoryItemType } from '../../types'
+import { _editInventoryItem } from '../../api/inventoryApi'
+import useCombinedStore from '../../State'
 
 type PropTypes = {
 	item: InventoryItemType;
-	dispatch: React.Dispatch<StateAction>,
 	cancel: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-function InventoryEdit({item, dispatch, cancel}: PropTypes) {
+function InventoryEdit({item, cancel}: PropTypes) {
 	const [title, setTitle] = useState<string>(item.title || '');
 	const [description, setDescription] = useState<string>(item.description || '');
+	const {editInventoryItem} = useCombinedStore();
 
 	const edit = useCallback(async (key: string, value: string) => {
-		const data = await editInventoryItem(item.id, { [key]: value});
+		const data = await _editInventoryItem(item.id, { [key]: value});
 		if(data){
-			dispatch({type: 'INVENTORY_EDIT', payload: data.data})
+			editInventoryItem(data.data);
 		}
-	}, [dispatch, item])
+	}, [item, editInventoryItem])
 	return (
 		<div className="modal__overlay active">
 			<div className="modal active animate__animated animate__zoomIn modal__md">

@@ -1,26 +1,24 @@
-import React, {useState, useCallback} from 'react'
-import { InventoryItem as InventoryItemType, StateAction } from '../../types'
-import { deleteInventoryItem } from '../../api/inventoryApi'
+import {useState, useCallback} from 'react'
+import { InventoryItem as InventoryItemType} from '../../types'
+import { _deleteInventoryItem } from '../../api/inventoryApi'
+import useCombinedStore from '../../State'
 import InventoryEdit from './InventoryEdit'
 
 type PropTypes = {
 	item: InventoryItemType;
-	dispatch: React.Dispatch<StateAction>,
 }
 
-function InventoryItem({item, dispatch}: PropTypes) {
+function InventoryItem({item}: PropTypes) {
 	const [editModal, setEditModal] = useState<boolean>(false);
 	const [deleteMode, setDeleteMode] = useState<boolean>(false);
+	const {deleteInventoryItem} = useCombinedStore();
 	
 	const deleteItem = useCallback(async () => {
-		const data = await deleteInventoryItem(item.id)
+		const data = await _deleteInventoryItem(item.id)
 		if(data.status === 'ok'){
-			dispatch({
-                type: 'INVENTORY_DELETE',
-                payload: data.data,
-            })
+			deleteInventoryItem(item.id);
 		}
-	},[item.id, dispatch])
+	},[deleteInventoryItem, item.id])
 	
 	return (
 		<div className="inventory__item" style={{background: item?.color}}>
@@ -55,7 +53,7 @@ function InventoryItem({item, dispatch}: PropTypes) {
 					}
 				</div>
 			</div>
-			{ editModal && <InventoryEdit cancel={setEditModal} item={item} dispatch={dispatch}/>}
+			{ editModal && <InventoryEdit cancel={setEditModal} item={item}/>}
 		</div>
 	)
 }

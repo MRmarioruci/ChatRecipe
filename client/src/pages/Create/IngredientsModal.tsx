@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect} from 'react'
 import { StateAction, InventoryItem } from '../../types';
 import Lottie from 'react-lottie-player';
-import { getInventory } from '../../api/inventoryApi';
+import { _getInventory } from '../../api/inventoryApi';
 import inventoryAnimation from '../../assets/animations/inventory.json';
 
 type PropTypes = {
@@ -15,9 +15,8 @@ type PropTypes = {
 function IngredientsModal({inventory, dispatch, cancel, selectedIngredients, setSelectedIngredients}: PropTypes) {
     const get = useCallback(async () => {
 		try {
-			const data = await getInventory();
+			const data = await _getInventory();
 			if(data.status === 'ok'){
-				
 				dispatch({
                     type: 'INVENTORY_SET',
                     payload: data.data

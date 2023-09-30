@@ -1,11 +1,10 @@
-import React from 'react'
 import Lottie from 'react-lottie-player'
 import cookingAnimation from '../assets/animations/cooking.json';
 
 function Main() {
     return (
         <div className="intro">
-            <div>
+            <div className="">
                 <Lottie
                     loop
                     animationData={cookingAnimation}
