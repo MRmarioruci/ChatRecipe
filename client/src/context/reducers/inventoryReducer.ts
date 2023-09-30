@@ -5,14 +5,13 @@ type InventoryState = InventoryItem[];
 const inventoryReducer = (state: InventoryState, action: StateAction) => {
     switch (action.type) {
         case 'INVENTORY_SET':
-            return action.payload;
+            return [...action.payload];
         case 'INVENTORY_ADD':
             return [...state, ...[action.payload] ];
         case 'INVENTORY_DELETE':
             return state.filter(item => item.id !== action.payload);
         case 'INVENTORY_EDIT':
             return state.map((item) => {
-                console.log(action.payload);
                 if (item.id === action.payload.id) {
                     return {
                         ...item,

@@ -1,15 +1,20 @@
-import React from 'react'
 import logo from '../assets/images/logo.png';
+import { useGlobalState } from '../context/GlobalState';
 
-function Header() {
+function Header({}) {
+    const {state, dispatch} = useGlobalState();
+	const {user} = state;
+
     return (
         <div className="main__header">
             <div className="main__header-logo">
-                <img  src={logo} width={220}/>
+                <img  src={logo} width={220} alt="Logo"/>
             </div>
-            <div className="main__header-account">
-                MR
-            </div>
+            {user.hasOwnProperty('email') &&
+                <div className="main__header-account">
+                    MR
+                </div>
+            }
         </div>
     )
 }

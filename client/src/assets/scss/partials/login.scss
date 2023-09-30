@@ -1,0 +1,26 @@
+@import "./vars.scss";
+
+.login{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-basis: 100%;
+    width: 420px;
+    max-width: 100%;
+    margin: auto;
+
+    .form__group{
+        width: 100%;
+    }
+    .login__actions{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+
+        div{
+            flex-basis: 50%;
+        }
+    }
+}

@@ -97,11 +97,11 @@ function Create() {
 	return (
 		<div className="page create">
 			<div className="create__actions">
-				<button className="btn btn__inverted btn__md btn__50" disabled={loading} onClick={() => setIngredientsModal(true)}>
+				<button className="btn btn__secondary btn__md btn__50" disabled={loading} onClick={() => setIngredientsModal(true)}>
 					<span className="material-icons mright--5">library_add_check</span>
 					Ingredients ({selectedIngredients.length})
 				</button>
-				<button className="btn btn__primary btn__md text__normal btn__50" onClick={get} disabled={loading}>
+				<button className="btn btn__inverted btn__md btn__50" onClick={get} disabled={loading}>
 					{ loading && <span className="loader__secondary mright--10"></span>}
 					{!loading && 
 						<>

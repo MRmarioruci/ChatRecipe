@@ -27,7 +27,7 @@ function Inventory() {
 
 	useEffect(() => {
 		get();
-	}, [get])
+	}, [get, inventory])
 	
 	return (
 		<div className="page inventory">
