@@ -2,6 +2,7 @@ import {lazy, Suspense, useEffect, FC, ReactElement, useMemo, useState} from 're
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AuthenticationService from './utils/AuthenticationService';
 import './assets/scss/main.scss';
+import 'animate.css';
 
 const Login = lazy(() => import('./pages/Login'));
 const Main = lazy(() => import ('./pages/Main'));

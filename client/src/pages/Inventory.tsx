@@ -28,17 +28,11 @@ function Inventory() {
 	return (
 		<div className="page inventory">
 			<div className="page__header">
-				<Link to="/" className="btn btn__secondary btn__md">
-					<span className="material-icons">
-						keyboard_arrow_left
-					</span>
-					Back
-				</Link>
 				<div>
 					{inventory.length > 0 &&
-						<button className="btn btn__inverted btn__md" onClick={() => setAddInventoryModal(true)}>
+						<button className="btn btn__primary btn__md" onClick={() => setAddInventoryModal(true)}>
 							<span className="material-icons">add</span>
-							Add
+							Add Ingredient
 						</button>
 					}  
 				</div>

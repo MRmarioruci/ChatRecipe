@@ -7,6 +7,7 @@ export interface InventoryItem{
     price?: number;
     stock?: number;
     color?: string;
+    selected?: boolean;
 }
 export interface StateType{
     user: any;

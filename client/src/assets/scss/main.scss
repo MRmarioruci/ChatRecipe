@@ -327,6 +327,34 @@ a {
 	justify-content: center;
 	align-items: center;
 	border-radius: 50%;
+
+	.ingredientsActions__count{
+		position: absolute;
+		right: 0px;
+		top: 0px;
+		background-color: var(--primary);
+		width: 20px;
+		height: 20px;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		border-radius: 50%;
+		color: var(--secondaryTextColor);
+	}
+}
+.ingredientsHistory{
+	position: absolute;
+	bottom: 215px;
+	right: 20px;
+	background-color: RGBA(var(--warning-rgb) / 50%);
+	border: 1px solid var(--warning);
+	width: 50px;
+	height: 50px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50%;
 	overflow: hidden;
 }
 .lottie svg{

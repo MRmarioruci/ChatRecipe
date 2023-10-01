@@ -1,45 +1,29 @@
 import React, {useCallback, useEffect} from 'react'
-import { StateAction, InventoryItem } from '../../types';
 import Lottie from 'react-lottie-player';
 import { _getInventory } from '../../api/inventoryApi';
 import inventoryAnimation from '../../assets/animations/inventory.json';
-
+import useCombinedStore from '../../State';
 type PropTypes = {
-    inventory: InventoryItem[];
-	dispatch: React.Dispatch<StateAction>;
-	cancel: React.Dispatch<React.SetStateAction<boolean>>;
-	selectedIngredients: string[];
-	setSelectedIngredients: React.Dispatch<React.SetStateAction<string[]>>;
+	setModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-function IngredientsModal({inventory, dispatch, cancel, selectedIngredients, setSelectedIngredients}: PropTypes) {
-    const get = useCallback(async () => {
+function IngredientsModal({setModal}: PropTypes) {
+	const {inventory, loadInventory, editInventoryItem} = useCombinedStore();
+
+	const get = useCallback(async () => {
 		try {
 			const data = await _getInventory();
 			if(data.status === 'ok'){
-				dispatch({
-                    type: 'INVENTORY_SET',
-                    payload: data.data
-                })
+				loadInventory(data.data);
 			}
 		} catch (error) {
 			console.log(error);
 		}
-	}, [dispatch])
+	}, [loadInventory])
 
-	const toggleIngredient = (newValue:boolean, ingredientTitle:string) => {
-		if(newValue){
-			setSelectedIngredients((currentIngredients) => {
-				return [...currentIngredients, ingredientTitle]
-			})
-		}else{
-			setSelectedIngredients((currentIngredients) => {
-				return currentIngredients.filter((ingredient) => ingredient !== ingredientTitle)
-			})
-		}
-	}
-	const ingredientIsChecked = (ingredientTitle:string) => {
-		return selectedIngredients.includes(ingredientTitle);
+	const ingredientIsChecked = (id: number) => {
+		const found = inventory.find( (item) => item.id === id);
+		return found ? found.selected :  false
 	}
 
 	useEffect(() => {
@@ -54,7 +38,7 @@ function IngredientsModal({inventory, dispatch, cancel, selectedIngredients, set
 						Choose your ingredients
 					</div>
 					<div className="close-modal modal__x">
-						<svg viewBox="0 0 20 20" onClick={() => { cancel(false) }}>
+						<svg viewBox="0 0 20 20" onClick={() => { setModal(false) }}>
 							<path d="M15.898,4.045c-0.271-0.272-0.713-0.272-0.986,0l-4.71,4.711L5.493,4.045c-0.272-0.272-0.714-0.272-0.986,0s-0.272,0.714,0,0.986l4.709,4.711l-4.71,4.711c-0.272,0.271-0.272,0.713,0,0.986c0.136,0.136,0.314,0.203,0.492,0.203c0.179,0,0.357-0.067,0.493-0.203l4.711-4.711l4.71,4.711c0.137,0.136,0.314,0.203,0.494,0.203c0.178,0,0.355-0.067,0.492-0.203c0.273-0.273,0.273-0.715,0-0.986l-4.711-4.711l4.711-4.711C16.172,4.759,16.172,4.317,15.898,4.045z"></path>
 						</svg>
 					</div>
@@ -64,7 +48,7 @@ function IngredientsModal({inventory, dispatch, cancel, selectedIngredients, set
 						{inventory.map((ingredient, idx) => {
 							return (
 								<div key={`ingredient__${idx}`} className="form__group">
-									<input type="checkbox" checked={ingredientIsChecked(ingredient.title)} onChange={(e) => toggleIngredient(e.target.checked, ingredient.title)}/>
+									<input type="checkbox" checked={ingredient.selected} onChange={(e) => editInventoryItem({id: ingredient.id, key: 'selected', value: e.target.checked})}/>
 									<label>{ingredient.title}</label>
 								</div>
 							)
@@ -82,7 +66,7 @@ function IngredientsModal({inventory, dispatch, cancel, selectedIngredients, set
 						}
 					</div>
 					<div className="modal__footer text__right">
-						<button className="btn btn__primary" onClick={() => { cancel(false) }}>
+						<button className="btn btn__primary" onClick={() => { setModal(false) }}>
 							Done
 						</button>
 					</div>

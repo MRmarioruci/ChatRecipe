@@ -5,35 +5,32 @@ import {_get, _remove} from '../api/bookmarksApi';
 import {Recipe as RecipeType} from '../types/index';
 import Recipe from './Recipe';
 import InstructionsModal from './Create/InstructionsModal';
+import useCombinedStore from '../State';
 
 function Bookmarks() {
     const [instructionsModal, setInstructionsModal] = useState<boolean | RecipeType>(false);
-    const bookmarks:any = [];
+    const {bookmarks, deleteBookmark, loadBookmarks, updateRecipe} = useCombinedStore();
     const getBookmarks = useCallback(async () => {
         try {
             const data = await _get();
             if(data.status === 'ok'){
-                /* dispatch({
-                    type: 'BOOKMARKS_SET',
-                    payload: data
-                }) */
+                loadBookmarks(data.data)
             }else{
                 throw new Error(`Status error ${data}`);
             }
         } catch (error) {
             console.error(error);
         }
-    }, [])
-    const removeMe = async (bookmark_id: number | undefined) => {
-        if(!bookmark_id) return false;
+    }, [loadBookmarks])
+
+    const removeMe = async (bookmark: RecipeType) => {
+        if(!bookmark || !bookmark.id) return false;
         
-        const removed = await _remove(bookmark_id);
+        const removed = await _remove(bookmark.id);
         if(removed.status === 'ok'){
-            console.log(removed);
-            /* dispatch({
-                type: 'BOOKMARKS_DELETE',
-                payload: bookmark_id
-            }) */
+            deleteBookmark(bookmark.id);
+            bookmark['bookmarked'] = false;
+            updateRecipe(bookmark.id, bookmark)
         }
     }
     useEffect(() => {
@@ -66,7 +63,7 @@ function Bookmarks() {
                                 <span className="material-icons">local_dining</span>
                                 View Instructions
                             </button>
-                            <button className="btn btn__danger-soft  btn__md text__normal" onClick={() => removeMe(recipe.id)}>
+                            <button className="btn btn__danger-soft  btn__md text__normal" onClick={() => removeMe(recipe)}>
                                 <span className="material-icons">bookmark_remove</span>
                             </button>
                         </div>

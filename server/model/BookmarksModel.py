@@ -27,7 +27,14 @@ class BookmarksModel:
             db.session.add(new_bookmark)
             db.session.commit()
 
-            return new_bookmark.id
+            return {
+                'id': new_bookmark.id,
+                'name': new_bookmark.name,
+                'description': new_bookmark.description,
+                'execution': new_bookmark.execution,
+                'ingredients': new_bookmark.ingredients,
+                'bookmarked': True
+            }
         except IntegrityError as e:
             db.session.rollback()
             print(f"Insertion error: {str(e)}")

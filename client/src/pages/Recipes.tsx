@@ -8,19 +8,21 @@ import useCombinedStore from '../State';
 
 type PropTypes = {
 	cancel: React.Dispatch<React.SetStateAction<boolean>>,
+	setError: React.Dispatch<React.SetStateAction<null | string>>,
 	error: null | string,
 	regenerate: () => Promise<void> ,
 	loading: boolean
 }
-function Recipes({cancel, error, regenerate, loading}: PropTypes) {
+function Recipes({cancel, error, regenerate, loading, setError}: PropTypes) {
 	const [instructions, setInstructions] = useState<null | RecipeType>(null);
-	const {main} = useCombinedStore();
+	const {main, updateRecipe, addBookmark} = useCombinedStore();
 
-	const bookmarkMe = async (recipe:RecipeType, idx: number) => {
+	const bookmarkMe = async (recipe:RecipeType) => {
 		try {
 			const bookmarked = await _bookmark(recipe)
 			if(bookmarked.status === 'ok'){
-				/*  */
+				addBookmark(bookmarked.data)
+				updateRecipe(recipe.id, bookmarked.data)
 			}else{
 				throw new Error('Could not bookmark');
 			}
@@ -64,9 +66,12 @@ function Recipes({cancel, error, regenerate, loading}: PropTypes) {
 									<h3>An error occured...</h3>
 									<h5 className="text__muted">{error}</h5>
 								</div>
+								{main.recipes.length > 0 && 
+									<button className="btn btn__primary btn__rounded" onClick={() => setError(null)}>View Previous Recipes</button>
+								}
 							</div>
 						}
-						{!instructions &&
+						{(!instructions && !error) &&
 							<div>
 								{main.recipes.map((recipe: RecipeType, idx:number) => {
 									return (
@@ -78,7 +83,7 @@ function Recipes({cancel, error, regenerate, loading}: PropTypes) {
 													View Instructions
 												</button>
 												{!recipe?.bookmarked &&
-													<button className="btn btn__secondary  btn__md text__normal" onClick={() => bookmarkMe(recipe, idx)}>
+													<button className="btn btn__secondary  btn__md text__normal" onClick={() => bookmarkMe(recipe)}>
 														<span className="material-icons">bookmark_border</span>
 													</button>
 												}
@@ -106,8 +111,9 @@ function Recipes({cancel, error, regenerate, loading}: PropTypes) {
 							</div>
 						}
 					</div>
-					<div className="modal__footer text__right">
-						<button className="btn btn__primary" onClick={regenerate} disabled={loading}>
+					<div className="modal__footer text__center">
+						<button className="btn btn__primary-3d btn__rounded" onClick={regenerate} disabled={loading}>
+							<span className="material-icons">refresh</span>
 							{loading ? 'Generating...' : 'Generate more...'}
 						</button>
 					</div>
