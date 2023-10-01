@@ -27,6 +27,8 @@ export interface Recipe{
     execution: string;
     ingredients: string | TrustedHTML;
     bookmarked?: boolean;
+    image?: string;
+    youtube?: string;
 }
 export interface MainState{
     selectedRecipe: Recipe | null;

@@ -33,6 +33,23 @@ function Generate() {
 		return out;
 	}, [inventory]);
 	
+	const mapRecipes = (recipes: RecipeType[]): Promise<RecipeType[]>  => {
+		return new Promise(async (resolve, reject) => {
+			const promises: Promise<any>[] = recipes.map(recipe => fetch('/mealdb/latest.php?s=' + encodeURIComponent(recipe.name))
+			.then( response => response.json()));
+			const results: any[] = await Promise.all(promises);
+			if(!results){
+				return resolve(recipes);
+			};
+			results.forEach((req, idx) => {
+				console.log(req);
+				if(req.meals){
+					recipes[idx]['image'] = req.meals[0]['strMealThumb'];
+				}
+			})
+			resolve(recipes);
+		})
+	}
 
 	const generate = useCallback(async () => {
 		setLoading(true);
@@ -47,7 +64,8 @@ function Generate() {
 					setShowRecipes(true);
 					return;
 				}
-				const recipes = JSON.parse(data.data);
+				const recipes: RecipeType[] = await mapRecipes(JSON.parse(data.data));
+				if(!recipes) return;
 				loadRecipes(recipes);
 				setShowRecipes(true)
 			}else{
