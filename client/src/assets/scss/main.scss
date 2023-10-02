@@ -69,6 +69,7 @@ a {
 		padding: 70px 5px;
 		width: 100%;
 		overflow-y: auto;
+		overflow-x: hidden;
 
 		.page__header{
 			display: flex;
@@ -114,7 +115,6 @@ a {
 			flex-direction: row;
 			justify-content: center;
 			align-items: center;
-			filter: grayscale(100%) brightness(57%) sepia(20%) hue-rotate(-140deg) saturate(900%) contrast(8);
 		}
 		.main__header-account{
 			width: 50px;
@@ -313,6 +313,19 @@ a {
 	align-items: center;
 	border-radius: 50%;
 	overflow: hidden;
+
+	.generate__message{
+		font-size: 12px;
+		background-color: RGBA(var(--primary-rgb) / 50%);
+		color: var(--secondaryTextColor);
+		width: 100%;
+		text-align: center;
+		justify-content: center;
+		position: absolute;
+		display: flex;
+		flex-direction: column;
+		z-index: 10;
+	}
 }
 .ingredientsActions{
 	position: absolute;

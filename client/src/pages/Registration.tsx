@@ -1,36 +1,33 @@
 import {useState} from 'react';
 import Lottie from 'react-lottie-player';
-import loginAnimation from '../assets/animations/login.json';
-import { Link } from 'react-router-dom';
-import { useGoogleLogin } from '@react-oauth/google';
+import winkAnimation from '../assets/animations/wink.json';
 import '../assets/scss/partials/login.scss';
+import { Link } from 'react-router-dom';
 
 interface FormEvent extends React.FormEvent<HTMLFormElement> {
     target: HTMLFormElement;
 }
 
-function Login() {
+function Registration() {
 	const [email, setEmail] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
+	const [passwordRepeat, setPasswordRepeat] = useState<string>('');
 	const [remember, setRemember] = useState<boolean>(false);
-
-	const loginWithEmailAndPassword = (e: FormEvent) => {
+	
+	const registerWithEmailAndPassword = (e: FormEvent) => {
 		e.preventDefault();
-		console.log(email, password);
+		console.log(email, password, passwordRepeat);
 	}
-	const googleLogin = useGoogleLogin({
-		onSuccess: tokenResponse => console.log(tokenResponse),
-	});
 	return (
 		<div className="page">
-			<form className="login" onSubmit={loginWithEmailAndPassword}>
+			<form className="login" onSubmit={registerWithEmailAndPassword}>
 				<Lottie
 					loop
-					animationData={loginAnimation}
+					animationData={winkAnimation}
 					play
 					style={{ width: 70, height: 70}}
 				/>
-				<h3>Welcome Back</h3>
+				<h3>Let him cook!</h3>
 				<div className="text__muted">Please enter your details</div>
 				<div className="form__group mtop--30">
 					<label>Email</label>
@@ -46,27 +43,31 @@ function Login() {
 						<span className="focus"></span>
 					</div>
 				</div>
+				<div className="form__group">
+					<label>Repeat password</label>
+					<div className="input__wrap">
+						<input type="password" placeholder="Type here..." value={passwordRepeat} onChange={e => setPasswordRepeat(e.target.value)} />
+						<span className="focus"></span>
+					</div>
+				</div>
 				<div className="login__actions">
 					<div className="form__group">
 						<input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
 						<label>Remember me</label>
 					</div>
-					<Link className="text__muted text__right mtop--10" to="/forgotPassword">
-						Forgot Password?
-					</Link>
 				</div>
-				<button disabled={!email && !password} className="btn btn__inverted btn__rounded btn__100 mtop--20">Log In</button>
-				<button className="btn btn__secondary btn__rounded btn__100 mtop--20" onClick={() => googleLogin()}>
-					<img src="https://api.iconify.design/logos:google-icon.svg" width={25} alt="Google Login"/>
+				<button disabled={!email && !password} className="btn btn__inverted btn__rounded btn__100 mtop--20">Sign up</button>
+				<button className="btn btn__secondary btn__rounded btn__100 mtop--20">
+					<img src="https://api.iconify.design/logos:google-icon.svg" width={25} alt="Google Register"/>
 					&nbsp;
-					Log In with Google
+					Sign up with Google
 				</button>
 				<div className="mtop--30 text__muted">
-					Don't have an account? <Link to={'/register'}>Sign up</Link>
+					Already have an account? <Link to={'/login'}>Log in</Link>
 				</div>
 			</form>
 		</div>
 	)
 }
 
-export default Login
+export default Registration

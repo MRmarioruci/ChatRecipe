@@ -8,13 +8,13 @@ type PropTypes = {
 function AuthenticationService({setIsLogged}: PropTypes) {
 	const {user, loadUser} = useCombinedStore();
 	useEffect(() => {
-		setTimeout(() => {
+		/* setTimeout(() => {
 			loadUser({
 				email: 'marioruci15@gmail.com',
 				image: null
 			})				
 			setIsLogged(true);
-		}, 3000)
+		}, 3000) */
 	}, [loadUser, setIsLogged])
 	return <></>;
 }

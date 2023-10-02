@@ -3,8 +3,10 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AuthenticationService from './utils/AuthenticationService';
 import './assets/scss/main.scss';
 import 'animate.css';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 const Login = lazy(() => import('./pages/Login'));
+const Registration = lazy(() => import('./pages/Registration'));
 const Main = lazy(() => import ('./pages/Main'));
 const Inventory = lazy(() => import ('./pages/Inventory'));
 const Bookmarks = lazy(() => import ('./pages/Bookmarks'));
@@ -24,16 +26,18 @@ function App() {
 	};
 	const getPage = (page: string): ReactElement => {
         const pages: { [key: string]: ReactElement } = {
-			main: <Main />,
-			bookmarks: <Bookmarks />,
-			inventory: <Inventory />,
+			main: isLogged ? <Main /> : <Login />,
+			bookmarks: isLogged ? <Bookmarks /> : <Login />,
+			inventory: isLogged ? <Inventory /> : <Login />,
+			login: isLogged ? <Main /> : <Login />,
+			register: isLogged ? <Main /> : <Registration />,
 		};
 		
 		const pageElement: ReactElement = pages[page];
 		if (!pageElement) {
 			throw new Error('Invalid page ' + page);
 		}
-		return isLogged ? <PageWrapper pageElement={pageElement} /> : <PageWrapper pageElement={<Login/>} />;
+		return <PageWrapper pageElement={pageElement} />;
     };
 	return (
 		<div className="main">
@@ -41,13 +45,22 @@ function App() {
 				<AuthenticationService setIsLogged={setIsLogged} />
 				<Suspense fallback={<h1>Loading...</h1>}>
 					<Header/>
-					<Routes>
-						<Route path="/" index element={getPage('main')} />
-						<Route path="/inventory" element={getPage('inventory')} />
-						<Route path="/bookmarks" element={getPage('bookmarks')} />
-					</Routes>
-					<Generate />
-					<Menu/>
+					<GoogleOAuthProvider clientId="271739434918-5s729u2fmm31b7pfoccgpva39mr1mmci.apps.googleusercontent.com">
+						<Routes>
+							<Route path="/" index element={getPage('main')} />
+							<Route path="/inventory" element={getPage('inventory')} />
+							<Route path="/bookmarks" element={getPage('bookmarks')} />
+							<Route path="/login" element={getPage('login')} />
+							<Route path="/register" element={getPage('register')} />
+							
+						</Routes>
+					</GoogleOAuthProvider>
+					{isLogged && 
+						<>
+							<Generate />
+							<Menu/>
+						</>
+					}
 				</Suspense>
 			</BrowserRouter>			
 		</div>

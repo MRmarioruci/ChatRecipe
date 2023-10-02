@@ -94,6 +94,11 @@ function Generate() {
 				</span>
 			</button>
 			<button className="generate animate__animated animate__bounceIn" onClick={generate} disabled={loading}>
+				{loading &&
+					<div className="generate__message animate__animated animate__bounceIn">
+						Be patient...
+					</div>
+				}
 				<Lottie
 					loop={loading}
 					animationData={cookAnimation}
