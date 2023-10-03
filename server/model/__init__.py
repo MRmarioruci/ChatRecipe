@@ -4,3 +4,4 @@ VERSION = '1'
 from .InventoryModel import *
 from .CreateModel import *
 from .BookmarksModel import *
+from .AuthenticationModel import *
