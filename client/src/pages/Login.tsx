@@ -4,6 +4,8 @@ import loginAnimation from '../assets/animations/login.json';
 import { Link } from 'react-router-dom';
 import { useGoogleLogin } from '@react-oauth/google';
 import '../assets/scss/partials/login.scss';
+import { _googleLogin } from '../api/authenticationApi';
+import { GoogleTokenResponseType } from '../types/AuthenticationTypes';
 
 interface FormEvent extends React.FormEvent<HTMLFormElement> {
     target: HTMLFormElement;
@@ -19,7 +21,9 @@ function Login() {
 		console.log(email, password);
 	}
 	const googleLogin = useGoogleLogin({
-		onSuccess: tokenResponse => console.log(tokenResponse),
+		onSuccess: (tokenResponse:GoogleTokenResponseType) => {
+			_googleLogin(tokenResponse);
+		},
 	});
 	return (
 		<div className="page">
