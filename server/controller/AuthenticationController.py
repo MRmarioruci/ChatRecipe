@@ -1,16 +1,28 @@
 import requests
 from flask import Blueprint, request, jsonify
+from flask_login import LoginManager, UserMixin, login_user
 from model import AuthenticationModel
 
 def getResponse():
 	return {'status': 'error', 'data': None}
 
+class User(UserMixin):
+	def __init__(self, data):
+		print(data)
+		self.name, self.surname, self.email, self.accountType = data
+		
 class AuthenticationController:
 	def __init__(self):
 		self.model = AuthenticationModel()
 		self.blueprint = Blueprint('authentication', __name__)
+		self.login_manager = LoginManager()
 		self.register_routes()
-		
+	
+	""" @login_manager.user_loader
+	def load_user(user_id):
+		# Replace this with your logic to load a user from the database
+		pass """
+
 	def register_routes(self):
 		self.blueprint.add_url_rule('/googleLogin', view_func=self.googleLogin, methods=['POST'])
 		self.blueprint.add_url_rule('/login', view_func=self.login, methods=['POST'])
@@ -39,32 +51,35 @@ class AuthenticationController:
 		response = getResponse()
 		data = request.get_json()
 		if not data:
-			response['error'] = 'Invalid input'
+			response['data'] = 'Invalid input'
 			return jsonify(response)
 		
 		google_user_info = self.getGoogleUserProfile(data)
 		if not google_user_info:
-			response['error'] = 'Could not retrieve google user profile'
+			response['data'] = 'Could not retrieve google user profile'
 			return jsonify(response)
 		
-		user = self.model.getUser(google_user_info['email'], False)
+		user = self.model.getUser(google_user_info['email'], True)
 		if not user:
-			response['error'] = 'The user is not registered with us. Please register first.'
+			response['data'] = 'The user is not signed with us. Please sign up first.'
 			return jsonify(response)
 		
-		""" Invoke to login logic here...s """
+		login_user(User(user))
+
+		response['data'] = user
+		response['status'] = 'ok'
 		return jsonify(response)
 	
 	def login(self):
 		response = getResponse()
 		data = request.get_json()
 		if not data:
-			response['error'] = 'Inavlid input'
+			response['data'] = 'Invalid input'
 			return jsonify(response)
 		
 		user = self.model.getUser(data['email'], False)
 		if not user:
-			response['error'] = 'The user is not registered with us. Please register first.'
+			response['data'] = 'The user is not signed with us. Please sign up first.'
 			return jsonify(response)
 			
 		""" Check password and the invoke the login logic """
@@ -76,6 +91,7 @@ class AuthenticationController:
 	
 	def googleRegistration(self):
 		response = getResponse()
+		data = request.get_json()
 		return jsonify(response)
 	
 	def registration(self):

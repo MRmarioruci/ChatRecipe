@@ -15,14 +15,21 @@ function Login() {
 	const [email, setEmail] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
 	const [remember, setRemember] = useState<boolean>(false);
+	const [status, setStatus] = useState<string | null>(null);
 
 	const loginWithEmailAndPassword = (e: FormEvent) => {
 		e.preventDefault();
 		console.log(email, password);
 	}
 	const googleLogin = useGoogleLogin({
-		onSuccess: (tokenResponse:GoogleTokenResponseType) => {
-			_googleLogin(tokenResponse);
+		onSuccess: async (tokenResponse:GoogleTokenResponseType) => {
+			const res = await _googleLogin(tokenResponse);
+			if(!res) setStatus('An error occured. Please try again later!');
+			if(res.status === 'ok'){
+				setStatus(null);
+			}else{
+				setStatus(res.data);
+			}
 		},
 	});
 	return (
@@ -65,6 +72,7 @@ function Login() {
 					&nbsp;
 					Log In with Google
 				</button>
+				{ (status && status !== 'loading') && <div className="text__danger mtop--10">{status}</div> }
 				<div className="mtop--30 text__muted">
 					Don't have an account? <Link to={'/register'}>Sign up</Link>
 				</div>

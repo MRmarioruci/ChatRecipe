@@ -4,13 +4,14 @@ from db import db
 
 def create_app():
     app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = ''
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://mario:smilemalaka@localhost:3306/chatrecipe'
     db.init_app(app)
     
     inventoryController = InventoryController()
     createController = CreateController()
     bookmarksController = BookmarksController()
     authenticationController = AuthenticationController()
+    authenticationController.login_manager.init_app(app)
 
     app.register_blueprint(inventoryController.blueprint, url_prefix='/api/inventory')
     app.register_blueprint(createController.blueprint, url_prefix='/api/create')
