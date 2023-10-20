@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from model import InventoryModel
 
-def getResponse():
+def get_response():
     return {'status': 'error', 'data': None}
 
 class InventoryController:
@@ -17,7 +17,7 @@ class InventoryController:
         self.blueprint.add_url_rule('/delete', 'delete', self.delete, methods=['POST'])
 
     def get(self):
-        response = getResponse()
+        response = get_response()
         data = self.model.get()
         if data:
             response['status'] = 'ok'
@@ -26,7 +26,7 @@ class InventoryController:
         return jsonify(response)
 
     def add(self):
-        response = getResponse()
+        response = get_response()
         data = request.get_json()
         if not data:
             response['data'] = 'Invalid input'
@@ -40,7 +40,7 @@ class InventoryController:
         return jsonify(response)
     
     def edit(self):
-        response = getResponse()
+        response = get_response()
         data = request.get_json()
         if not data:
             response['data'] = 'Invalid input'
@@ -54,7 +54,7 @@ class InventoryController:
         return jsonify(response)
     
     def delete(self):
-        response = getResponse()
+        response = get_response()
         data = request.get_json()
         if not data:
             response['data'] = 'Invalid input'

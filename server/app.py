@@ -7,16 +7,16 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://mario:smilemalaka@localhost:3306/chatrecipe'
     db.init_app(app)
     
-    inventoryController = InventoryController()
-    createController = CreateController()
-    bookmarksController = BookmarksController()
-    authenticationController = AuthenticationController()
-    authenticationController.login_manager.init_app(app)
+    inventory_controller = InventoryController()
+    create_controller = CreateController()
+    bookmarks_controller = BookmarksController()
+    authentication_controller = AuthenticationController()
+    authentication_controller.login_manager.init_app(app)
 
-    app.register_blueprint(inventoryController.blueprint, url_prefix='/api/inventory')
-    app.register_blueprint(createController.blueprint, url_prefix='/api/create')
-    app.register_blueprint(bookmarksController.blueprint, url_prefix='/api/bookmarks')
-    app.register_blueprint(authenticationController.blueprint, url_prefix='/api/authentication')
+    app.register_blueprint(inventory_controller.blueprint, url_prefix='/api/inventory')
+    app.register_blueprint(create_controller.blueprint, url_prefix='/api/create')
+    app.register_blueprint(bookmarks_controller.blueprint, url_prefix='/api/bookmarks')
+    app.register_blueprint(authentication_controller.blueprint, url_prefix='/api/authentication')
     
     return app
 

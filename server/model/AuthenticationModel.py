@@ -18,7 +18,7 @@ class AuthenticationModel:
 	def __init__(self) -> None:
 		pass
 
-	def getUser(self, email, public=False):
+	def get_user(self, email, public=False):
 		if not email:
 			return False
 		
@@ -37,4 +37,6 @@ class AuthenticationModel:
 		
 		return user._asdict()
 
+	def register_user():
+		pass
 		

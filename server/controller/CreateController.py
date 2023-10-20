@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from model import CreateModel
 
-def getResponse():
+def get_response():
     return {'status': 'error', 'data': None}
 
 class CreateController:
@@ -14,7 +14,7 @@ class CreateController:
         self.blueprint.add_url_rule('/', view_func=self.create, methods=['POST'])
     
     def create(self):
-        response = getResponse()
+        response = get_response()
         data = request.get_json()
         if not data:
             response['error'] = 'Invalid input'
