@@ -23,7 +23,7 @@ class AuthenticationModel:
 			return False
 		
 		user = Users.query.with_entities(
-            Users.id if(not public) else None,
+            Users.id,
 			Users.name,
 			Users.surname,
 			Users.email,
@@ -34,8 +34,9 @@ class AuthenticationModel:
 
 		if not user:
 			return None
-		
-		return user._asdict()
+		user = user._asdict()
+
+		return user
 
 	def register_user():
 		pass

@@ -1,6 +1,6 @@
 import {GoogleTokenType} from '../types/AuthenticationTypes';
 
-const _googleLogin = (token:GoogleTokenType) => fetch('/api/authentication/googleLogin', {
+const _googleLogin = (token:GoogleTokenType) => fetch('/api/authentication/google_login', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
@@ -22,11 +22,11 @@ const _login = (email:string, password: string) => fetch('/api/authentication/lo
 .then((data) => data.json())
 .catch((err) => { throw new Error(err) });
 
-const _isLogged = () => fetch('/api/authentication/isLogged')
+const _isLogged = () => fetch('/api/authentication/is_logged')
 .then((data) => data.json())
 .catch((err) => { throw new Error(err) });
 
-const _googleRegistration = (token:GoogleTokenType) => fetch('/api/authentication/googleRegistration', {
+const _googleRegistration = (token:GoogleTokenType) => fetch('/api/authentication/google_registration', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',

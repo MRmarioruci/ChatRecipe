@@ -1,5 +1,6 @@
 import {useEffect} from 'react';
 import useCombinedStore from '../State';
+import {_isLogged} from '../api/authenticationApi';
 import { StateAction } from '../types';
 
 type PropTypes = {
@@ -7,7 +8,12 @@ type PropTypes = {
 }
 function AuthenticationService({setIsLogged}: PropTypes) {
 	const {user, loadUser} = useCombinedStore();
+	
 	useEffect(() => {
+		_isLogged()
+		.then((data) => {
+			console.log(data);
+		})
 		/* setTimeout(() => {
 			loadUser({
 				email: 'marioruci15@gmail.com',

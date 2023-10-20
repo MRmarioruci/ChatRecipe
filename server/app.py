@@ -1,10 +1,12 @@
 from flask import Flask
 from controller import InventoryController, CreateController, BookmarksController, AuthenticationController
 from db import db
+from uuid import uuid4
 
 def create_app():
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://mario:smilemalaka@localhost:3306/chatrecipe'
+    app.config['SECRET_KEY'] = 'asdGOESHERE'
     db.init_app(app)
     
     inventory_controller = InventoryController()

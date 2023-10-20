@@ -1,6 +1,6 @@
 import requests
 from flask import Blueprint, request, jsonify
-from flask_login import LoginManager, UserMixin, login_user
+from flask_login import LoginManager, UserMixin, login_user, current_user
 from model import AuthenticationModel
 
 def get_response():
@@ -8,8 +8,7 @@ def get_response():
 
 class User(UserMixin):
 	def __init__(self, data):
-		print(data)
-		self.name, self.surname, self.email, self.accountType = data
+		self.id, self.name, self.surname, self.email, self.accountType = data
 		
 class AuthenticationController:
 	def __init__(self):
@@ -18,10 +17,9 @@ class AuthenticationController:
 		self.login_manager = LoginManager()
 		self.register_routes()
 	
-	""" @login_manager.user_loader
+	@login_manager.user_loader
 	def load_user(user_id):
-		# Replace this with your logic to load a user from the database
-		pass """
+		return User(user_id)
 
 	def register_routes(self):
 		self.blueprint.add_url_rule('/google_login', view_func=self.google_login, methods=['POST'])
@@ -64,6 +62,7 @@ class AuthenticationController:
 			response['data'] = 'The user is not signed with us. Please sign up first.'
 			return jsonify(response)
 		
+		print(user)
 		login_user(User(user))
 
 		response['data'] = user
@@ -87,6 +86,10 @@ class AuthenticationController:
 	
 	def is_logged(self):
 		response = get_response()
+		if current_user.is_authenticated:
+			response['data'] = True
+			response['status'] = 'ok'
+
 		return jsonify(response)
 	
 	def google_registration(self):
@@ -108,7 +111,7 @@ class AuthenticationController:
 		
 
 		self.model.register_user(google_user_info['email'])
-		#login_user(User(user))
+		login_user(User(user))
 
 		response['data'] = user
 		response['status'] = 'ok'
