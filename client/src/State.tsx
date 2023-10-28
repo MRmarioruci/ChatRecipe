@@ -3,7 +3,7 @@ import { InventoryItem, Recipe } from './types';
 
 type InventoryEditType = { id: number, key: string, value: string | boolean}
 interface UserStoreType{
-	user: { email: string, image: string | null} | null;
+	user: { email: string, picture: string | null} | null;
 	loadUser: (payload: any) => void
 }
 interface InventoryStoreType{

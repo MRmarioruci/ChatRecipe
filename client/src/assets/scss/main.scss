@@ -96,9 +96,7 @@ a {
 		left: 0;
 		width: 100%;
 		z-index: 2;
-		background-color: RGBA(var(--background-rgb) / 30%);
-		-webkit-backdrop-filter: blur(14px);
-		backdrop-filter: blur(14px);
+		background-color: var(--background);
 		padding: 0px;
 		display: flex;
 		flex-direction: row;
@@ -127,6 +125,12 @@ a {
 			flex-direction: column;
 			justify-content: center;
 			align-items: center;
+
+			img{
+				width: 50px;
+				height: 50px;
+				border-radius: 50%;
+			}
 		}
 	}
 	.main__menu{

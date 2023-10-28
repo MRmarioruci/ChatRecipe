@@ -23,7 +23,11 @@ function Header({}) {
             {user &&
                 <div className="flex flex__row">
                     <div className="main__header-account uppercase">
-                        {initials}
+                        {user.picture ?
+                            <img src={user.picture} style={{maxWidth: '100%'}} alt="Profile" />
+                            :
+                            initials
+                        }
                     </div>
                     <button className="btn btn__transparent btn__sm" onClick={logout}>
                         <span className="material-icons text__warning">
