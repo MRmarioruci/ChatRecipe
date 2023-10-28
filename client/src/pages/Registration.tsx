@@ -4,7 +4,7 @@ import winkAnimation from '../assets/animations/wink.json';
 import '../assets/scss/partials/login.scss';
 import { Link } from 'react-router-dom';
 import { useGoogleLogin } from '@react-oauth/google';
-import { _googleRegistration, _login } from '../api/authenticationApi';
+import { _googleRegistration, _registration } from '../api/authenticationApi';
 import { GoogleTokenResponseType } from '../types/AuthenticationTypes';
 
 interface FormEvent extends React.FormEvent<HTMLFormElement> {
@@ -15,12 +15,23 @@ function Registration() {
 	const [email, setEmail] = useState<string>('');
 	const [password, setPassword] = useState<string>('');
 	const [passwordRepeat, setPasswordRepeat] = useState<string>('');
+	const [name, setName] = useState<string>('');
+	const [surname, setSurname] = useState<string>('');
 	const [remember, setRemember] = useState<boolean>(false);
 	const [status, setStatus] = useState<string | null>(null);
 	
-	const registerWithEmailAndPassword = (e: FormEvent) => {
+	const registerWithEmailAndPassword = async (e: FormEvent) => {
 		e.preventDefault();
-		console.log(email, password, passwordRepeat);
+		if(password !== passwordRepeat) return setStatus('The passwords do not match.');
+
+		const res = await _registration(email, password, name, surname, remember);
+		if(!res) setStatus('An error occured. Please try again later!');
+		if(res.status === 'ok'){
+			window.location.reload();
+			setStatus(null);
+		}else{
+			setStatus(res.data);
+		}
 	}
 	const googleRegistration = useGoogleLogin({
 		onSuccess: async (tokenResponse:GoogleTokenResponseType) => {
@@ -45,7 +56,23 @@ function Registration() {
 				/>
 				<h3>Let him cook!</h3>
 				<div className="text__muted">Please enter your details</div>
-				<div className="form__group mtop--30">
+				<div className="flex flex__row">
+					<div className="form__group">
+						<label>Name</label>
+						<div className="input__wrap">
+							<input type="text" placeholder="Type here..." value={name} onChange={e => setName(e.target.value)} />
+							<span className="focus"></span>
+						</div>
+					</div>
+					<div className="form__group mleft--5">
+						<label>Surname</label>
+						<div className="input__wrap">
+							<input type="text" placeholder="Type here..." value={surname} onChange={e => setSurname(e.target.value)} />
+							<span className="focus"></span>
+						</div>
+					</div>
+				</div>
+				<div className="form__group">
 					<label>Email</label>
 					<div className="input__wrap">
 						<input type="email" placeholder="Type here..." value={email} onChange={e => setEmail(e.target.value)} />
@@ -72,7 +99,7 @@ function Registration() {
 						<label>Remember me</label>
 					</div>
 				</div>
-				<button disabled={!email && !password} className="btn btn__inverted btn__rounded btn__100 mtop--20">Sign up</button>
+				<button disabled={!email && !password && !name && !surname} className="btn btn__inverted btn__rounded btn__100 mtop--20">Sign up</button>
 				<button className="btn btn__secondary btn__rounded btn__100 mtop--20" onClick={() => googleRegistration()}>
 					<img src="https://api.iconify.design/logos:google-icon.svg" width={25} alt="Google Register"/>
 					&nbsp;

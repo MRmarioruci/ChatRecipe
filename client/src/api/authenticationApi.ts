@@ -38,24 +38,37 @@ const _googleRegistration = (token:GoogleTokenType) => fetch('/api/authenticatio
 .then((data) => data.json())
 .catch((err) => { throw new Error(err) });
 
-const _registration = (email:string, password: string) => fetch('/api/authentication/registration', {
+const _registration = (email:string, password: string, name:string, surname:string, remember:boolean) => fetch('/api/authentication/registration', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
     },
     body: JSON.stringify({
         email: email,
-        password: password
+        password: password,
+        name: name,
+        surname: surname,
+        remember: remember
     }),
 })
 .then((data) => data.json())
 .catch((err) => { throw new Error(err) });
 
+const _logout = () => fetch('/api/authentication/logout', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({}),
+})
+.then((data) => data.json())
+.catch((err) => { throw new Error(err) });
 
 export {
     _googleLogin,
     _login,
     _isLogged,
     _googleRegistration,
-    _registration
+    _registration,
+    _logout
 }

@@ -11,6 +11,7 @@ class Users(db.Model):
 	email = db.Column(db.Text())
 	accountType = db.Column(Enum('google', 'normal', name='account_types'))
 	password = db.Column(db.Text())
+	picture = db.Column(db.Text())
 
 	def _asdict(self):
 		return {column.name: getattr(self, column.name) for column in self.__table__.columns}
@@ -29,7 +30,8 @@ class AuthenticationModel:
 			Users.surname,
 			Users.email,
 			Users.accountType,
-			Users.password
+			Users.password,
+			Users.picture
         ).filter(
             Users.email == email,
         )
@@ -58,7 +60,8 @@ class AuthenticationModel:
 			Users.surname,
 			Users.email,
 			Users.accountType,
-			Users.password
+			Users.password,
+			Users.picture
         ).filter(
             Users.id == id,
         )
@@ -80,7 +83,8 @@ class AuthenticationModel:
 			surname = surname,
 			email = email,
 			accountType = accountType,
-			password = password
+			password = password,
+			picture = picture
         )
 		db.session.add(new_user)
 		db.session.commit()

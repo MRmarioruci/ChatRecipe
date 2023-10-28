@@ -1,6 +1,6 @@
 import requests
 from flask import Blueprint, request, jsonify
-from flask_login import LoginManager, UserMixin, login_user, current_user
+from flask_login import LoginManager, UserMixin, login_user, current_user, logout_user
 from model import AuthenticationModel
 
 def get_response():
@@ -13,6 +13,7 @@ class User(UserMixin):
 		self.surname = data['surname']
 		self.email = data['email']
 		self.accountType = data['accountType']
+		self.picture = data['picture']
 
 class AuthenticationController:
 	def __init__(self, bcrypt):
@@ -26,6 +27,7 @@ class AuthenticationController:
 	def register_routes(self):
 		self.blueprint.add_url_rule('/google_login', view_func=self.google_login, methods=['POST'])
 		self.blueprint.add_url_rule('/login', view_func=self.login, methods=['POST'])
+		self.blueprint.add_url_rule('/logout', view_func=self.logout, methods=['POST'])
 		self.blueprint.add_url_rule('/is_logged', view_func=self.is_logged, methods=['GET'])
 		self.blueprint.add_url_rule('/google_registration', view_func=self.google_registration, methods=['POST'])
 		self.blueprint.add_url_rule('/registration', view_func=self.registration, methods=['POST'])
@@ -88,9 +90,9 @@ class AuthenticationController:
 		if not user:
 			response['data'] = 'The user is not signed with us. Please sign up first.'
 			return jsonify(response)
-
-		if self.bcrypt.check_password_hash(user.password, data['password']):
-			login_user(User(user))
+		
+		if self.bcrypt.check_password_hash(user['password'], data['password']):
+			login_user(User(user), remember=data['remember'])
 			del user['password']
 
 			response['data'] = user
@@ -109,6 +111,7 @@ class AuthenticationController:
 				'surname': current_user.surname,
 				'email': current_user.email,
 				'accountType': current_user.accountType,
+				'picture': current_user.picture,
 			}
 			response['status'] = 'ok'
 
@@ -126,7 +129,6 @@ class AuthenticationController:
 			response['data'] = 'Could not retrieve google user profile'
 			return jsonify(response)
 		
-		print(google_user_info)
 		user = self.model.get_user(google_user_info['email'], True)
 		if user:
 			response['data'] = 'The user is already registered. Sign in, or use another account.'
@@ -143,4 +145,27 @@ class AuthenticationController:
 	
 	def registration(self):
 		response = get_response()
+		data = request.get_json()
+		if not data:
+			response['data'] = 'Invalid input'
+			return jsonify(response)
+		
+		user = self.model.get_user(data['email'], False)
+		if user:
+			response['data'] = 'The user is already registered. Sign in, or use another account.'
+			return jsonify(response)
+
+		new_user = self.model.register_user(data['email'], data['name'], data['surname'], None, data['password'], 'normal', self.bcrypt)
+		login_user(User(user), remember=data['remember'])
+		del new_user['password']
+		
+		response['data'] = new_user
+		response['status'] = 'ok'
+		return jsonify(response)
+	
+	def logout(self):
+		response = get_response()
+		logout_user()
+		response['data'] = True
+		response['status'] = 'ok'
 		return jsonify(response)
