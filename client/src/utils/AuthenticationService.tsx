@@ -1,26 +1,20 @@
 import {useEffect} from 'react';
 import useCombinedStore from '../State';
 import {_isLogged} from '../api/authenticationApi';
-import { StateAction } from '../types';
 
 type PropTypes = {
 	setIsLogged: React.Dispatch<React.SetStateAction<boolean>>
 }
 function AuthenticationService({setIsLogged}: PropTypes) {
-	const {user, loadUser} = useCombinedStore();
-	
+	const {loadUser} = useCombinedStore();
 	useEffect(() => {
 		_isLogged()
 		.then((data) => {
-			console.log(data);
+			if(data.status === 'ok'){
+				loadUser(data.data)
+				setIsLogged(true);
+			}
 		})
-		/* setTimeout(() => {
-			loadUser({
-				email: 'marioruci15@gmail.com',
-				image: null
-			})				
-			setIsLogged(true);
-		}, 3000) */
 	}, [loadUser, setIsLogged])
 	return <></>;
 }

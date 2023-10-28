@@ -7,6 +7,7 @@ def create_app():
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://mario:smilemalaka@localhost:3306/chatrecipe'
     app.config['SECRET_KEY'] = 'asdGOESHERE'
+    app.config['PERMANENT_SESSION_LIFETIME'] = 1  # 1800 seconds = 30 minutes
     db.init_app(app)
     
     inventory_controller = InventoryController()

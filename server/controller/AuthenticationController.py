@@ -8,25 +8,33 @@ def get_response():
 
 class User(UserMixin):
 	def __init__(self, data):
-		self.id, self.name, self.surname, self.email, self.accountType = data
-		
+		self.id = data['id']
+		self.name = data['name']
+		self.surname = data['surname']
+		self.email = data['email']
+		self.accountType = data['accountType']
+
 class AuthenticationController:
 	def __init__(self):
 		self.model = AuthenticationModel()
 		self.blueprint = Blueprint('authentication', __name__)
 		self.login_manager = LoginManager()
+		self.login_manager.user_loader(self.load_user)  # Set the user_loader function
 		self.register_routes()
 	
-	@login_manager.user_loader
-	def load_user(user_id):
-		return User(user_id)
-
 	def register_routes(self):
 		self.blueprint.add_url_rule('/google_login', view_func=self.google_login, methods=['POST'])
 		self.blueprint.add_url_rule('/login', view_func=self.login, methods=['POST'])
 		self.blueprint.add_url_rule('/is_logged', view_func=self.is_logged, methods=['GET'])
 		self.blueprint.add_url_rule('/google_registration', view_func=self.google_registration, methods=['POST'])
 		self.blueprint.add_url_rule('/registration', view_func=self.registration, methods=['POST'])
+
+	@staticmethod
+	def load_user(id):
+		user_data = AuthenticationModel.get_user_by_id(id)
+		if user_data:
+			return User(user_data)
+		return None
 	
 	def get_google_user_profile(self, data):
 		try:
@@ -57,12 +65,11 @@ class AuthenticationController:
 			response['data'] = 'Could not retrieve google user profile'
 			return jsonify(response)
 		
-		user = self.model.get_user(google_user_info['email'], True)
+		user = self.model.get_user(google_user_info['email'], True, 'google')
 		if not user:
 			response['data'] = 'The user is not signed with us. Please sign up first.'
 			return jsonify(response)
 		
-		print(user)
 		login_user(User(user))
 
 		response['data'] = user
@@ -76,18 +83,25 @@ class AuthenticationController:
 			response['data'] = 'Invalid input'
 			return jsonify(response)
 		
-		user = self.model.get_user(data['email'], False)
+		user = self.model.get_user(data['email'], False, 'normal')
 		if not user:
 			response['data'] = 'The user is not signed with us. Please sign up first.'
 			return jsonify(response)
-			
-		""" Check password and the invoke the login logic """
+
+		print('Validate password')
+		
 		return jsonify(response)
 	
 	def is_logged(self):
 		response = get_response()
 		if current_user.is_authenticated:
-			response['data'] = True
+			response['data'] = {
+				'id': current_user.id,
+				'name': current_user.name,
+				'surname': current_user.surname,
+				'email': current_user.email,
+				'accountType': current_user.accountType,
+			}
 			response['status'] = 'ok'
 
 		return jsonify(response)

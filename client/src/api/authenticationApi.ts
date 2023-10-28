@@ -9,14 +9,16 @@ const _googleLogin = (token:GoogleTokenType) => fetch('/api/authentication/googl
 })
 .then((data) => data.json())
 .catch((err) => { throw new Error(err) });
-const _login = (email:string, password: string) => fetch('/api/authentication/login', {
+
+const _login = (email:string, password: string, remember: boolean) => fetch('/api/authentication/login', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
     },
     body: JSON.stringify({
         email: email,
-        password: password
+        password: password,
+        remember: remember
     }),
 })
 .then((data) => data.json())

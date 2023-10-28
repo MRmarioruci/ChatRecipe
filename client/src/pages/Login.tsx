@@ -4,7 +4,7 @@ import loginAnimation from '../assets/animations/login.json';
 import { Link } from 'react-router-dom';
 import { useGoogleLogin } from '@react-oauth/google';
 import '../assets/scss/partials/login.scss';
-import { _googleLogin } from '../api/authenticationApi';
+import { _googleLogin, _login } from '../api/authenticationApi';
 import { GoogleTokenResponseType } from '../types/AuthenticationTypes';
 
 interface FormEvent extends React.FormEvent<HTMLFormElement> {
@@ -17,15 +17,23 @@ function Login() {
 	const [remember, setRemember] = useState<boolean>(false);
 	const [status, setStatus] = useState<string | null>(null);
 
-	const loginWithEmailAndPassword = (e: FormEvent) => {
+	const loginWithEmailAndPassword = async (e: FormEvent) => {
 		e.preventDefault();
-		console.log(email, password);
+		const res = await _login(email, password, remember);
+		if(!res) setStatus('An error occured. Please try again later!');
+		if(res.status === 'ok'){
+			window.location.reload();
+			setStatus(null);
+		}else{
+			setStatus(res.data);
+		}
 	}
 	const googleLogin = useGoogleLogin({
 		onSuccess: async (tokenResponse:GoogleTokenResponseType) => {
 			const res = await _googleLogin(tokenResponse);
 			if(!res) setStatus('An error occured. Please try again later!');
 			if(res.status === 'ok'){
+				window.location.reload();
 				setStatus(null);
 			}else{
 				setStatus(res.data);
