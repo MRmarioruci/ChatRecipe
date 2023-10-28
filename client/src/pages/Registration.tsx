@@ -3,6 +3,9 @@ import Lottie from 'react-lottie-player';
 import winkAnimation from '../assets/animations/wink.json';
 import '../assets/scss/partials/login.scss';
 import { Link } from 'react-router-dom';
+import { useGoogleLogin } from '@react-oauth/google';
+import { _googleRegistration, _login } from '../api/authenticationApi';
+import { GoogleTokenResponseType } from '../types/AuthenticationTypes';
 
 interface FormEvent extends React.FormEvent<HTMLFormElement> {
     target: HTMLFormElement;
@@ -13,11 +16,24 @@ function Registration() {
 	const [password, setPassword] = useState<string>('');
 	const [passwordRepeat, setPasswordRepeat] = useState<string>('');
 	const [remember, setRemember] = useState<boolean>(false);
+	const [status, setStatus] = useState<string | null>(null);
 	
 	const registerWithEmailAndPassword = (e: FormEvent) => {
 		e.preventDefault();
 		console.log(email, password, passwordRepeat);
 	}
+	const googleRegistration = useGoogleLogin({
+		onSuccess: async (tokenResponse:GoogleTokenResponseType) => {
+			const res = await _googleRegistration(tokenResponse);
+			if(!res) setStatus('An error occured. Please try again later!');
+			if(res.status === 'ok'){
+				window.location.reload();
+				setStatus(null);
+			}else{
+				setStatus(res.data);
+			}
+		},
+	});
 	return (
 		<div className="page">
 			<form className="login" onSubmit={registerWithEmailAndPassword}>
@@ -57,11 +73,12 @@ function Registration() {
 					</div>
 				</div>
 				<button disabled={!email && !password} className="btn btn__inverted btn__rounded btn__100 mtop--20">Sign up</button>
-				<button className="btn btn__secondary btn__rounded btn__100 mtop--20">
+				<button className="btn btn__secondary btn__rounded btn__100 mtop--20" onClick={() => googleRegistration()}>
 					<img src="https://api.iconify.design/logos:google-icon.svg" width={25} alt="Google Register"/>
 					&nbsp;
 					Sign up with Google
 				</button>
+				{ (status && status !== 'loading') && <div className="text__danger mtop--10">{status}</div> }
 				<div className="mtop--30 text__muted">
 					Already have an account? <Link to={'/login'}>Log in</Link>
 				</div>

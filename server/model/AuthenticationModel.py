@@ -23,7 +23,7 @@ class AuthenticationModel:
 		if not email:
 			return False
 
-		user = Users.query.with_entities(
+		query = Users.query.with_entities(
             Users.id,
 			Users.name,
 			Users.surname,
@@ -32,11 +32,14 @@ class AuthenticationModel:
 			Users.password
         ).filter(
             Users.email == email,
-			(Users.accountType == type) if type else None
-        ).first()
+        )
+		if type:
+			query = query.filter(Users.accountType == type)
 
+		user = query.first()
 		if not user:
 			return None
+		
 		user = user._asdict()
 
 		if public:
@@ -45,27 +48,45 @@ class AuthenticationModel:
 		return user
 	
 	@staticmethod
-	def get_user_by_id(user_id):
-		print(user_id)
-		if not user_id:
+	def get_user_by_id(id):
+		if not id:
 			return False
-		
-		user = Users.query.with_entities(
+
+		query = Users.query.with_entities(
             Users.id,
 			Users.name,
 			Users.surname,
 			Users.email,
 			Users.accountType,
+			Users.password
         ).filter(
-            Users.id == user_id
-        ).first()
-
+            Users.id == id,
+        )
+		user = query.first()
 		if not user:
 			return None
-		user = user._asdict()
+		
+		return user._asdict()
 
-		return user
+	def register_user(self, email, name, surname, picture, password=None, accountType="normal", bcrypt=None):
+		if not email or not accountType or not bcrypt or not name or not surname:
+			return False
+		
+		if password:
+			password = bcrypt.generate_password_hash(password).decode('utf-8')
+		
+		new_user = Users(
+            name = name,
+			surname = surname,
+			email = email,
+			accountType = accountType,
+			password = password
+        )
+		db.session.add(new_user)
+		db.session.commit()
 
-	def register_user():
-		pass
+		created_user = new_user._asdict()
+		created_user['id'] = new_user.id
+
+		return created_user
 		

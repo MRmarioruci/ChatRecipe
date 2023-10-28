@@ -15,7 +15,8 @@ class User(UserMixin):
 		self.accountType = data['accountType']
 
 class AuthenticationController:
-	def __init__(self):
+	def __init__(self, bcrypt):
+		self.bcrypt = bcrypt
 		self.model = AuthenticationModel()
 		self.blueprint = Blueprint('authentication', __name__)
 		self.login_manager = LoginManager()
@@ -88,8 +89,15 @@ class AuthenticationController:
 			response['data'] = 'The user is not signed with us. Please sign up first.'
 			return jsonify(response)
 
-		print('Validate password')
-		
+		if self.bcrypt.check_password_hash(user.password, data['password']):
+			login_user(User(user))
+			del user['password']
+
+			response['data'] = user
+			response['status'] = 'ok'
+		else:
+			response['data'] = 'Please check your credentials and try again.'
+
 		return jsonify(response)
 	
 	def is_logged(self):
@@ -118,16 +126,18 @@ class AuthenticationController:
 			response['data'] = 'Could not retrieve google user profile'
 			return jsonify(response)
 		
+		print(google_user_info)
 		user = self.model.get_user(google_user_info['email'], True)
 		if user:
 			response['data'] = 'The user is already registered. Sign in, or use another account.'
 			return jsonify(response)
 		
-
-		self.model.register_user(google_user_info['email'])
-		login_user(User(user))
-
-		response['data'] = user
+		
+		new_user = self.model.register_user(google_user_info['email'], google_user_info['given_name'], google_user_info['family_name'], google_user_info['picture'], None, 'google', self.bcrypt)
+		login_user(User(new_user))
+		del new_user['password']
+		
+		response['data'] = new_user
 		response['status'] = 'ok'
 		return jsonify(response)
 	
