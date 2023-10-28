@@ -86,9 +86,12 @@ class AuthenticationController:
 			response['data'] = 'Invalid input'
 			return jsonify(response)
 		
-		user = self.model.get_user(data['email'], False, 'normal')
+		user = self.model.get_user(data['email'], False)
 		if not user:
 			response['data'] = 'The user is not signed with us. Please sign up first.'
+			return jsonify(response)
+		if user['accountType'] == 'google':
+			response['data'] = 'The user is signed with the google SSO. Please click log in with Google'
 			return jsonify(response)
 		
 		if self.bcrypt.check_password_hash(user['password'], data['password']):

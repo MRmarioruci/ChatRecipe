@@ -70,9 +70,9 @@ function Login() {
 						<input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
 						<label>Remember me</label>
 					</div>
-					<Link className="text__muted text__right mtop--10" to="/forgotPassword">
+					{/* <Link className="text__muted text__right mtop--10" to="/forgotPassword">
 						Forgot Password?
-					</Link>
+					</Link> */}
 				</div>
 				<button disabled={!email && !password} className="btn btn__inverted btn__rounded btn__100 mtop--20">Log In</button>
 				<button className="btn btn__secondary btn__rounded btn__100 mtop--20" onClick={() => googleLogin()}>
