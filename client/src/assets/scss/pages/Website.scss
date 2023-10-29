@@ -75,4 +75,33 @@
             }
         }
     }
+    @media(max-width: 1050px){
+        .headline{
+            font-size: 3em !important;
+        }
+        .left{
+            display: none;
+        }
+        .right{
+            flex-basis: 100%;
+        }
+        .stat__item{
+            .text__muted{
+                font-size: 14px !important;
+            }
+        }
+    }
+    @media(max-width: 768px){
+        .headline{
+            font-size: 1.5em !important;
+        }
+        .stat__item{
+            .text__muted{
+                font-size: 12px !important;
+            }
+            .material-icons{
+                font-size: 30px !important;
+            }
+        }
+    }
 }

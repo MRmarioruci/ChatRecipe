@@ -6,6 +6,7 @@ import { useGoogleLogin } from '@react-oauth/google';
 import '../assets/scss/partials/login.scss';
 import { _googleLogin, _login } from '../api/authenticationApi';
 import { GoogleTokenResponseType } from '../types/AuthenticationTypes';
+import logo from '../assets/images/logo.png';
 
 interface FormEvent extends React.FormEvent<HTMLFormElement> {
     target: HTMLFormElement;
@@ -43,6 +44,9 @@ function Login() {
 	return (
 		<div className="page">
 			<form className="login" onSubmit={loginWithEmailAndPassword}>
+				<Link to="/">
+					<img  src={logo} width={220} alt="Logo" className='logo'/>
+				</Link>
 				<Lottie
 					loop
 					animationData={loginAnimation}

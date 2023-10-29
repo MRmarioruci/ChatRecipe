@@ -44,7 +44,7 @@ function App() {
 		<div className="main">
 			<BrowserRouter>
 				<AuthenticationService setIsLogged={setIsLogged} />
-				<Suspense fallback={<h1>Loading...</h1>}>
+				<Suspense fallback={<span className="loader"></span>}>
 					{isLogged && <Header/>}
 					<GoogleOAuthProvider clientId="271739434918-5s729u2fmm31b7pfoccgpva39mr1mmci.apps.googleusercontent.com">
 						<Routes>

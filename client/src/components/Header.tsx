@@ -18,7 +18,7 @@ function Header({}) {
     return (
         <div className="main__header">
             <div className="main__header-logo">
-                <img  src={logo} width={220} alt="Logo"/>
+                <img  src={logo} width={180} alt="Logo"/>
             </div>
             {user &&
                 <div className="flex flex__row">

@@ -3,12 +3,14 @@ from flask_bcrypt import Bcrypt
 from controller import InventoryController, CreateController, BookmarksController, AuthenticationController
 from db import db
 from uuid import uuid4
+import random
+import string
 
 def create_app():
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://mario:smilemalaka@localhost:3306/chatrecipe'
-    app.config['SECRET_KEY'] = 'asdGOESHERE'
-    app.config['PERMANENT_SESSION_LIFETIME'] = 150  # 1800 seconds = 30 minutes
+    app.config['SECRET_KEY'] = ''.join(random.choices(string.ascii_letters + string.digits, k=30))
+    app.config['PERMANENT_SESSION_LIFETIME'] = 1800 # = 30 minutes
     bcrypt = Bcrypt(app)
     db.init_app(app)
     
