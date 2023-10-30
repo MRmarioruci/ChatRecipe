@@ -1,6 +1,10 @@
 from db import db
 import openai
-openai.api_key = ""
+from dotenv import load_dotenv
+import os
+load_dotenv()
+
+openai.api_key = os.getenv("OPEN_AI_KEY")
 
 class CreateModel:
 	def prompt_gpt(self, messages, temperature):

@@ -10,7 +10,7 @@ function Recipe({recipe, idx, showIngredients}: PropTypes) {
 		<div key={`recipe__${idx}`} className="recipe__item">
             <div>{idx+1}</div>
             <div>
-                {recipe?.image && <img src={recipe.image} width="100%" alt="Recipe" />}
+                {/* {recipe?.image && <img src={recipe.image} width="100%" alt="Recipe" />} */}
                 <h4>{recipe.name}</h4>
                 <div>{recipe.description}</div>
                 <div>
