@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from flask_login import current_user
 from model import BookmarksModel
 
 def get_response():
@@ -18,33 +19,37 @@ class BookmarksController:
 	def add(self):
 		response = get_response()
 		data = request.get_json(force=True)
-		data.pop('id') if 'id' in data else None
-		data.pop('bookmarked') if 'bookmarked' in data else None
+		if current_user.is_authenticated:
+			data.pop('id') if 'id' in data else None
+			data.pop('bookmarked') if 'bookmarked' in data else None
+			data.pop('image') if 'image' in data else None
 
-		added = self.model.add(1, **data)
-		if added:
-			response['status'] = 'ok'
-			response['data'] = added
+			added = self.model.add(current_user.id, **data)
+			if added:
+				response['status'] = 'ok'
+				response['data'] = added
 
 		return jsonify(response)
 
 	def remove(self):
 		response = get_response()
-		data = request.get_json(force=True)
-		removed = self.model.remove(1, data['bookmark_id'])
-		if removed:
-			response['status'] = 'ok'
-			response['data'] = True
+		if current_user.is_authenticated:
+			data = request.get_json(force=True)
+			removed = self.model.remove(current_user.id, data['bookmark_id'])
+			if removed:
+				response['status'] = 'ok'
+				response['data'] = True
 
 		return jsonify(response)
 
 	def get(self):
 		response = get_response()
-		bookmark_id = request.args.get('bookmark_id')
-		modelResponse = self.model.get(1, bookmark_id)
-		if not modelResponse:
-			return jsonify(response)
-		
-		response['status'] = 'ok'
-		response['data'] = modelResponse
+		if current_user.is_authenticated:
+			bookmark_id = request.args.get('bookmark_id')
+			modelResponse = self.model.get(current_user.id, bookmark_id)
+			if not modelResponse:
+				return jsonify(response)
+			
+			response['status'] = 'ok'
+			response['data'] = modelResponse
 		return jsonify(response)

@@ -79,7 +79,7 @@ function Login() {
 					</Link> */}
 				</div>
 				<button disabled={!email && !password} className="btn btn__inverted btn__rounded btn__100 mtop--20">Log In</button>
-				<button className="btn btn__secondary btn__rounded btn__100 mtop--20" onClick={() => googleLogin()}>
+				<button type="button" className="btn btn__secondary btn__rounded btn__100 mtop--20" onClick={() => googleLogin()}>
 					<img src="https://api.iconify.design/logos:google-icon.svg" width={25} alt="Google Login"/>
 					&nbsp;
 					Log In with Google

@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from flask_login import current_user
 from model import InventoryModel
 
 def get_response():
@@ -18,10 +19,11 @@ class InventoryController:
 
     def get(self):
         response = get_response()
-        data = self.model.get()
-        if data:
-            response['status'] = 'ok'
-            response['data'] = data
+        if current_user.is_authenticated:
+            data = self.model.get(current_user.id)
+            if data:
+                response['status'] = 'ok'
+                response['data'] = data
 
         return jsonify(response)
 
@@ -32,10 +34,11 @@ class InventoryController:
             response['data'] = 'Invalid input'
             return jsonify(response)
 
-        added = self.model.add(data)
-        if added:
-            response['status'] ='ok'
-            response['data'] = added
+        if current_user.is_authenticated:
+            added = self.model.add(data, current_user.id)
+            if added:
+                response['status'] ='ok'
+                response['data'] = added
 
         return jsonify(response)
     
@@ -46,10 +49,11 @@ class InventoryController:
             response['data'] = 'Invalid input'
             return jsonify(response)
         
-        edited = self.model.edit(data['id'], data['changes'])
-        if edited:
-            response['status'] ='ok'
-            response['data'] = edited
+        if current_user.is_authenticated:
+            edited = self.model.edit(data['id'], data['changes'], current_user.id)
+            if edited:
+                response['status'] ='ok'
+                response['data'] = edited
 
         return jsonify(response)
     
@@ -59,10 +63,10 @@ class InventoryController:
         if not data:
             response['data'] = 'Invalid input'
             return jsonify(response)
-        
-        deleted = self.model.delete(data['id'])
-        if deleted:
-            response['status'] ='ok'
-            response['data'] = data['id']
+        if current_user.is_authenticated:
+            deleted = self.model.delete(data['id'], current_user.id)
+            if deleted:
+                response['status'] ='ok'
+                response['data'] = data['id']
 
         return jsonify(response)

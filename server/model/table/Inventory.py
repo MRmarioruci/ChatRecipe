@@ -6,3 +6,4 @@ class Inventory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(250))
     description= db.Column(db.String(250))
+    user_id = db.Column(db.Integer)

@@ -1,0 +1,10 @@
+{
+    "routes": {
+        "/api/*": {
+            "destination": "13.50.203.46:5001",
+            "headers": {
+                "Content-Type": "application/json"
+            }
+        }
+    }
+}
