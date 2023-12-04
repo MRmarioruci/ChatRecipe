@@ -9,6 +9,7 @@ A fun project in which users can generate recipes based on what they have on the
   <li>React.js</li>
   <li>Typescript</li>
   <li>Scss</li>
+  <li>Rest APIs</li>
   <li>ChatGPT</li>
 </ul>
 
